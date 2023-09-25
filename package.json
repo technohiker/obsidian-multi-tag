@@ -1,6 +1,6 @@
 {
 	"name": "multi-tag",
-	"version": "0.7.1",
+	"version": "0.8.0",
 	"main": "main.js",
 	"scripts": {
 		"dev": "node esbuild.config.mjs",
@@ -8,7 +8,7 @@
 		"version": "node version-bump.mjs && git add manifest.json versions.json"
 	},
 	"keywords": [],
-	"author": "",
+	"author": "fez-github",
 	"license": "MIT",
 	"devDependencies": {
 		"@types/node": "^16.11.6",
