@@ -42,8 +42,15 @@ function searchThroughFolders(obj: TFolder, string: string) {
 	}
 }
 
-function appendToFile(file: TFile, string: string) {
-	this.app.vault.append(file, `\n${string}`);
+function appendToFile(file: TFile, string : string) {
+	const tags = string.split(",");
+	this.app.fileManager.processFrontMatter(file , (fm : any) => {
+		if (!fm.tags) {
+			fm.tags = new Set(tags);
+		} else {
+			fm.tags = new Set([...fm.tags, ...tags]);
+		}
+	});
 }
 
 function FilesOrFolders(arr: (TFile | TFolder)[], string: string) {
@@ -68,7 +75,7 @@ class TagModal extends Modal {
 
 		//Removes potential spaces in file names.  Should I also remove capitalization?
 		if (base instanceof TFolder) {
-			this.default = `#${base.name.replace(" ", "-")}`;
+			this.default = `${base.name.replace(" ", "-")}`;
 		}
 
 		this.base = base;
@@ -91,7 +98,7 @@ class TagModal extends Modal {
 		//Create text.
 		titleEl.createEl("h2", { text: "Please type in a tag." });
 		contentEl.createEl("span", {
-			text: "Whatever text is inputted will be appended to all selected files as text.  Place '#' signs to identify tags.",
+			text: "If you add multiple tags, separate them with commas.  Do not add '#'",
 		});
 
 		//Create form object.
