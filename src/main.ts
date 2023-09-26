@@ -100,7 +100,6 @@ export default class MultiTagPlugin extends Plugin {
 				if (this.settings.yamlOrInline === "inline") {
 					this.appendToFile(child, string);
 				} else {
-					this.appendToFile(child, string);
 					this.addToFrontMatter(child, string);
 				}
 			}
