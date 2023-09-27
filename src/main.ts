@@ -33,8 +33,8 @@ class TagSettingTab extends PluginSettingTab {
 			.setName("YAML or Inline")
 			.setDesc("Choose whether to use YAML or inline tags.")
 			.addDropdown((dropdown) => {
-				dropdown.addOption("yaml", "YAML");
 				dropdown.addOption("inline", "Inline");
+				dropdown.addOption("yaml", "YAML");
 				dropdown.setValue(this.plugin.settings.yamlOrInline);
 				dropdown.onChange(async (value) => {
 					this.plugin.settings.yamlOrInline = value;
