@@ -50,6 +50,7 @@ export default class MultiTagPlugin extends Plugin {
 	//Currently have all functions in this class for easy "this" use.  Should it be refactored later?
 	async onload() {
 		await this.loadSettings();
+		//Set up modal for adding tags to all files in a folder.
 		this.registerEvent(
 			this.app.workspace.on("file-menu", (menu, file, source) => {
 				if (file instanceof TFolder) {
@@ -66,6 +67,7 @@ export default class MultiTagPlugin extends Plugin {
 				}
 			})
 		);
+		//Set up modal for adding tags to all selected files.
 		this.registerEvent(
 			this.app.workspace.on("files-menu", (menu, file, source) => {
 				menu.addItem((item) => {
@@ -74,7 +76,7 @@ export default class MultiTagPlugin extends Plugin {
 						.setTitle("Tag selected files")
 						.onClick(() =>
 							new TagModal(this.app, file, (obj, string) => {
-								this.FilesOrFolders(obj, string);
+								this.searchThroughFiles(obj, string);
 							}).open()
 						);
 				});
@@ -83,15 +85,7 @@ export default class MultiTagPlugin extends Plugin {
 		this.addSettingTab(new TagSettingTab(this.app, this));
 	}
 
-	async loadSettings() {
-		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
-	}
-
-	async saveSettings() {
-		await this.saveData(this.settings);
-	}
-
-	/** Get all files belonging to a folder and print their file names. */
+	/** Get all files belonging to a folder. */
 	searchThroughFolders(obj: TFolder, string: string) {
 		for (let child of obj.children) {
 			if (child instanceof TFolder) {
@@ -107,22 +101,8 @@ export default class MultiTagPlugin extends Plugin {
 		}
 	}
 
-	appendToFile(file: TFile, string: string) {
-		this.app.vault.append(file, `\n#${string}`);
-	}
-
-	addToFrontMatter(file: TFile, string: string) {
-		const tags = string.split(",");
-		this.app.fileManager.processFrontMatter(file, (fm: any) => {
-			if (!fm.tags) {
-				fm.tags = new Set(tags);
-			} else {
-				fm.tags = new Set([...fm.tags, ...tags]);
-			}
-		});
-	}
-
-	FilesOrFolders(arr: (TFile | TFolder)[], string: string) {
+	/** Iterate through a selection of files. */
+	searchThroughFiles(arr: (TFile | TFolder)[], string: string) {
 		for (let el of arr) {
 			if (el instanceof TFile && el.extension === "md") {
 				if (this.settings.yamlOrInline === "inline") {
@@ -132,6 +112,34 @@ export default class MultiTagPlugin extends Plugin {
 				}
 			}
 		}
+	}
+
+	async loadSettings() {
+		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+	}
+
+	async saveSettings() {
+		await this.saveData(this.settings);
+	}
+
+	/** Add a tag to the bottom of a note. */
+	appendToFile(file: TFile, string: string) {
+		const tags = string.split(",");
+		for (let tag of tags) {
+			this.app.vault.append(file, `\n#${tag}`);
+		}
+	}
+
+	/** Add tags to the top of a note. */
+	addToFrontMatter(file: TFile, string: string) {
+		const tags = string.split(",");
+		this.app.fileManager.processFrontMatter(file, (fm: any) => {
+			if (!fm.tags) {
+				fm.tags = new Set(tags);
+			} else {
+				fm.tags = new Set([...fm.tags, ...tags]);
+			}
+		});
 	}
 }
 
@@ -147,7 +155,7 @@ class TagModal extends Modal {
 	) {
 		super(app);
 
-		//Removes potential spaces in file names.  Should I also remove capitalization?
+		//Removes potential spaces in file names.
 		if (base instanceof TFolder) {
 			this.default = `${base.name.replace(" ", "-")}`;
 		}
@@ -159,8 +167,10 @@ class TagModal extends Modal {
 	onSubmit(e: Event, input: string) {
 		e.preventDefault();
 
-		//Run code for adding text to all files.
-		this.submission(this.base, input);
+		//Trim any spaces to prevent splits in tags.
+		const trimmed = input.replace(/ /g, "");
+
+		this.submission(this.base, trimmed);
 		this.close();
 	}
 
