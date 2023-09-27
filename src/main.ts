@@ -1,53 +1,16 @@
-import {
-	App,
-	Modal,
-	Plugin,
-	PluginSettingTab,
-	Setting,
-	TAbstractFile,
-	TFile,
-	TFolder,
-} from "obsidian";
+import { Plugin, TFile, TFolder } from "obsidian";
 
-interface MultiTagSettings {
-	yamlOrInline: string;
-}
+import { TagModal } from "./TagModal";
+import { TagSettingTab } from "./TagSettingTab";
+import { MultiTagSettings } from "./TagSettingTab";
 
-const DEFAULT_SETTINGS: MultiTagSettings = {
+const defaultSettings: MultiTagSettings = {
 	yamlOrInline: "inline",
 };
-
-class TagSettingTab extends PluginSettingTab {
-	plugin: MultiTagPlugin;
-
-	constructor(app: App, plugin: MultiTagPlugin) {
-		super(app, plugin);
-		this.plugin = plugin;
-	}
-
-	display() {
-		let { containerEl } = this;
-		containerEl.empty();
-
-		new Setting(containerEl)
-			.setName("YAML or Inline")
-			.setDesc("Choose whether to use YAML or inline tags.")
-			.addDropdown((dropdown) => {
-				dropdown.addOption("inline", "Inline");
-				dropdown.addOption("yaml", "YAML");
-				dropdown.setValue(this.plugin.settings.yamlOrInline);
-				dropdown.onChange(async (value) => {
-					this.plugin.settings.yamlOrInline = value;
-					await this.plugin.saveSettings();
-				});
-			});
-	}
-}
 
 export default class MultiTagPlugin extends Plugin {
 	settings: MultiTagSettings;
 	//Set as Events to unload when needed.
-	//Currently have all functions in this class for easy "this" use.  Should it be refactored later?
 	async onload() {
 		await this.loadSettings();
 		//Set up modal for adding tags to all files in a folder.
@@ -114,14 +77,6 @@ export default class MultiTagPlugin extends Plugin {
 		}
 	}
 
-	async loadSettings() {
-		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
-	}
-
-	async saveSettings() {
-		await this.saveData(this.settings);
-	}
-
 	/** Add a tag to the bottom of a note. */
 	appendToFile(file: TFile, string: string) {
 		const tags = string.split(",");
@@ -141,69 +96,12 @@ export default class MultiTagPlugin extends Plugin {
 			}
 		});
 	}
-}
 
-class TagModal extends Modal {
-	default: string = "";
-	base: TFolder | TAbstractFile[];
-	submission: (obj: any, string: string) => void;
-
-	constructor(
-		app: App,
-		base: TFolder | TAbstractFile[],
-		submission: (obj: any, string: string) => void
-	) {
-		super(app);
-
-		//Removes potential spaces in file names.
-		if (base instanceof TFolder) {
-			this.default = `${base.name.replace(" ", "-")}`;
-		}
-
-		this.base = base;
-		this.submission = submission;
+	async loadSettings() {
+		this.settings = Object.assign({}, defaultSettings, await this.loadData());
 	}
 
-	onSubmit(e: Event, input: string) {
-		e.preventDefault();
-
-		//Trim any spaces to prevent splits in tags.
-		const trimmed = input.replace(/ /g, "");
-
-		this.submission(this.base, trimmed);
-		this.close();
-	}
-
-	onOpen(): void {
-		this.modalEl.addClass("modal");
-
-		const { contentEl, titleEl } = this;
-
-		//Create text.
-		titleEl.createEl("h2", { text: "Please type in a tag." });
-		contentEl.createEl("span", {
-			text: "If you add multiple tags, separate them with commas. Do not add '#'",
-		});
-
-		//Create form object.
-		contentEl.createEl("form", { cls: "modal-form" }, (formEl) => {
-			let input = formEl.createEl("input", { value: this.default });
-
-			formEl.createDiv("modal-button-container", (buttonEl) => {
-				let btnSubmit = buttonEl.createEl("button", {
-					text: "Submit",
-					type: "submit",
-					cls: "mod-cta",
-				});
-
-				let btnCancel = buttonEl.createEl("button", {
-					text: "Cancel",
-					type: "cancel",
-				});
-				btnCancel.addEventListener("click", () => this.close());
-			});
-
-			formEl.addEventListener("submit", (e) => this.onSubmit(e, input.value));
-		});
+	async saveSettings() {
+		await this.saveData(this.settings);
 	}
 }
