@@ -46,9 +46,10 @@ class TagSettingTab extends PluginSettingTab {
 
 export default class MultiTagPlugin extends Plugin {
 	settings: MultiTagSettings;
+	//Set as Events to unload when needed.
+	//Currently have all functions in this class for easy "this" use.  Should it be refactored later?
 	async onload() {
 		await this.loadSettings();
-		//Add menu item for multi-tag functionality.  Set as Event to automatically be unloaded when needed.
 		this.registerEvent(
 			this.app.workspace.on("file-menu", (menu, file, source) => {
 				if (file instanceof TFolder) {
