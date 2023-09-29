@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { onMount } from "svelte";
+
 	export let value: string;
 	export let option: string;
 	export let closeModal: () => void;
@@ -8,6 +10,15 @@
 		e.preventDefault();
 		submission(value, option);
 	}
+
+	onMount(() => {
+		const tagInput = document.getElementById("tagInput") as HTMLInputElement;
+
+		//Use setTimeout to focus on input after the DOM has been loaded.
+		setTimeout(() => {
+			tagInput.focus();
+		}, 0);
+	});
 </script>
 
 <span>
