@@ -22,6 +22,7 @@ If you wish to install it manually,
 ## Next Steps:
 
 - [x] Update obsidian typing so "files-menu" is properly implemented.
-- [ ] Allow user to change between YAML/Inline directly from the form instead of needing to go into Settings.
-- [ ] Clean up code. It's kind of messy right now.
+- [x] Allow user to change between YAML/Inline directly from the form instead of needing to go into Settings.
+- [x] Clean up code. It's kind of messy right now.
+- [ ] Try converting to front-end framework to make forms easier to manage. Will try Svelte.
 - [ ] Add tests.
