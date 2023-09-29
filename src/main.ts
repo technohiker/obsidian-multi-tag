@@ -22,9 +22,16 @@ export default class MultiTagPlugin extends Plugin {
 							.setIcon("tag")
 							.setTitle("Tag folder's files")
 							.onClick(() =>
-								new TagModal(this.app, file, (obj, string) => {
-									this.searchThroughFolders(obj, string);
-								}).open()
+								new TagModal(
+									this.app,
+									file,
+									this.settings.yamlOrInline,
+									async (obj, string, setting) => {
+										this.settings.yamlOrInline = setting;
+										await this.saveSettings();
+										this.searchThroughFolders(obj, string);
+									}
+								).open()
 							);
 					});
 				}
@@ -38,9 +45,16 @@ export default class MultiTagPlugin extends Plugin {
 						.setIcon("tag")
 						.setTitle("Tag selected files")
 						.onClick(() =>
-							new TagModal(this.app, file, (obj, string) => {
-								this.searchThroughFiles(obj, string);
-							}).open()
+							new TagModal(
+								this.app,
+								file,
+								this.settings.yamlOrInline,
+								async (obj, string, setting) => {
+									this.settings.yamlOrInline = setting;
+									await this.saveSettings();
+									this.searchThroughFiles(obj, string);
+								}
+							).open()
 						);
 				});
 			})
