@@ -2,7 +2,7 @@ import { PluginSettingTab, App, Setting } from "obsidian";
 
 import MultiTagPlugin from "./main";
 
-export class TagSettingTab extends PluginSettingTab {
+export class SettingTab extends PluginSettingTab {
 	plugin: MultiTagPlugin;
 
 	constructor(app: App, plugin: MultiTagPlugin) {

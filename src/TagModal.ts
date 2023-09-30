@@ -28,6 +28,7 @@ export class TagModal extends Modal {
 
 	async onOpen() {
 		this.titleEl.createEl("h2", { text: "Please type in a tag." });
+		console.log(this.option);
 
 		this.component = new TagForm({
 			target: this.contentEl,
@@ -35,7 +36,7 @@ export class TagModal extends Modal {
 				value: this.default,
 				option: this.option,
 				closeModal: () => this.close(),
-				submission: this.onSubmit,
+				submission: this.onSubmit.bind(this),
 			},
 		});
 	}

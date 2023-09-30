@@ -1,8 +1,8 @@
 import { Plugin, TFile, TFolder } from "obsidian";
 
 import { TagModal } from "./TagModal";
-import { TagSettingTab } from "./TagSettingTab";
-import { MultiTagSettings } from "./TagSettingTab";
+import { SettingTab } from "./SettingTab";
+import { MultiTagSettings } from "./SettingTab";
 
 const defaultSettings: MultiTagSettings = {
 	yamlOrInline: "inline",
@@ -59,7 +59,7 @@ export default class MultiTagPlugin extends Plugin {
 				});
 			})
 		);
-		this.addSettingTab(new TagSettingTab(this.app, this));
+		this.addSettingTab(new SettingTab(this.app, this));
 	}
 
 	/** Get all files belonging to a folder. */

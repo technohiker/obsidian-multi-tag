@@ -1,3 +1,4 @@
+<!--Form for TagModal.ts-->
 <script lang="ts">
 	import { onMount } from "svelte";
 
@@ -25,9 +26,9 @@
 	If you add multiple tags, separate them with commas. Do not add '#'.
 </span>
 <form on:submit={onSubmit} class="modal-form">
-	<select>
-		<option selected={option === "inline"}>Inline</option>
-		<option selected={option === "yaml"}>YAML</option>
+	<select bind:value={option}>
+		<option value="inline" selected={option === "inline"}>Inline</option>
+		<option value="yaml" selected={option === "yaml"}>YAML</option>
 	</select>
 	<input id="tagInput" type="text" bind:value />
 	<div class="modal-button-container">
