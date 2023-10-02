@@ -13,6 +13,7 @@ export default class MultiTagPlugin extends Plugin {
 	//Set as Events to unload when needed.
 	async onload() {
 		await this.loadSettings();
+		// this.app.vault.adapter.append("test-folder/file-3","text")
 		//Set up modal for adding tags to all files in a folder.
 		this.registerEvent(
 			this.app.workspace.on("file-menu", (menu, file, source) => {
