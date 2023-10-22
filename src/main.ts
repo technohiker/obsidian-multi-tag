@@ -107,7 +107,19 @@ export default class MultiTagPlugin extends Plugin {
 			if (!fm.tags) {
 				fm.tags = new Set(tags);
 			} else {
-				fm.tags = new Set([...fm.tags, ...tags]);
+				let curTags = [...fm.tags]
+
+				//Conditions are here in case user has spelled "tags" differently.  Any other way to solve this?
+				if(fm.TAGS){
+					curTags.push(...fm.TAGS);
+					delete fm.TAGS
+				}
+				if(fm.Tags){
+					curTags.push(...fm.Tags);
+					delete fm.Tags
+				}
+
+				fm.tags = new Set([...curTags, ...tags]);
 			}
 		});
 	}
