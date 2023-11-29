@@ -13,5 +13,10 @@ declare module "obsidian" {
 			) => any,
 			ctx?: any
 		): EventRef;
+		on(
+			name: "search:results-menu",
+			callback: (menu: Menu, leaf: any) => any,
+			ctx?: any
+		): EventRef;
 	}
 }

@@ -1,4 +1,4 @@
-import { Plugin, TFile, TFolder } from "obsidian";
+import { Menu, Plugin, TFile, TFolder } from "obsidian";
 
 import { TagModal } from "./TagModal";
 import { SettingTab } from "./SettingTab";
@@ -40,7 +40,7 @@ export default class MultiTagPlugin extends Plugin {
 		);
 		//Set up modal for adding tags to all selected files.
 		this.registerEvent(
-			this.app.workspace.on("files-menu", (menu, file, source) => {
+			this.app.workspace.on("files-menu", (menu, files, source) => {
 				menu.addItem((item) => {
 					item
 						.setIcon("tag")
@@ -48,7 +48,7 @@ export default class MultiTagPlugin extends Plugin {
 						.onClick(() =>
 							new TagModal(
 								this.app,
-								file,
+								files,
 								this.settings.yamlOrInline,
 								async (obj, string, setting) => {
 									this.settings.yamlOrInline = setting;
@@ -57,6 +57,31 @@ export default class MultiTagPlugin extends Plugin {
 								}
 							).open()
 						);
+				});
+			})
+		);
+		this.registerEvent(
+			this.app.workspace.on("search:results-menu", (menu: Menu, leaf: any) => {
+				menu.addItem((item) => {
+					item
+						.setIcon("tag")
+						.setTitle("Add tags to search results")
+						.onClick(() => {
+							let files: any[] = [];
+							leaf.dom.vChildren.children.forEach((e: any) => {
+								files.push(e.file);
+							});
+							new TagModal(
+								this.app,
+								files,
+								this.settings.yamlOrInline,
+								async (obj, string, setting) => {
+									this.settings.yamlOrInline = setting;
+									await this.saveSettings();
+									this.searchThroughFiles(obj, string);
+								}
+							).open()
+						});
 				});
 			})
 		);
