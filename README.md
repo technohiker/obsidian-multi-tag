@@ -1,5 +1,10 @@
 # Multi-Tag
 
+![Multi Tag Demo](https://github.com/fez-github/obsidian-multi-tag/assets/75589254/8cb7cd25-9fd5-4105-8658-6d32e1f219b4)
+
+
+UPDATE: This plugin will remain functional, but I will be focusing on [obsidian-multi-properties](https://github.com/fez-github/obsidian-multi-properties) instead, which serves very similar functionality.  Multi Tag will be around for anyone who wants to use inline tags.
+
 When installed, right-clicking on a folder will bring up an option to add a tag to all notes within a folder. Upon clicking this, a message will pop up asking you to add a tag. You may add your tag, and it will be appended to each note in the folder.
 
 You can also select multiple notes with Shift+Mouse, and right-click the selection to get the same efect.
@@ -24,5 +29,5 @@ If you wish to install it manually,
 - [x] Update obsidian typing so "files-menu" is properly implemented.
 - [x] Allow user to change between YAML/Inline directly from the form instead of needing to go into Settings.
 - [x] Clean up code. It's kind of messy right now.
-- [ ] Try converting to front-end framework to make forms easier to manage. Will try Svelte.
+- [x] Try converting to front-end framework to make forms easier to manage. Will try Svelte.
 - [ ] Add tests.
